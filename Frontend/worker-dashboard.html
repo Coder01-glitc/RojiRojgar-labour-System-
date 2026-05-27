@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title id="pageTitle">Worker Dashboard - RojiRojgar</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+    :root {
+        --primary-color: #2563eb;
+        --primary-dark: #1d4ed8;
+    }
+
+    body {
+        background: #f3f4f6;
+    }
+
+    .dashboard-header {
+        background: white;
+        border-bottom: 1px solid #e5e7eb;
+        padding: 15px 0;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        position: sticky;
+        top: 0;
+        z-index: 100;
+    }
+
+    .dashboard-header-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .brand {
+        font-weight: 700;
+        color: #1e293b;
+        font-size: 20px;
+    }
+
+    .brand i {
+        color: var(--primary-color);
+        margin-right: 8px;
+    }
+
+    .language-toggle {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+    }
+
+    .language-toggle button {
+        padding: 6px 12px;
+        border: 1px solid #d1d5db;
+        background: white;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 12px;
+        font-weight: 500;
+        transition: all 0.2s;
+    }
+
+    .language-toggle button.active {
+        background: var(--primary-color);
+        color: white;
+        border-color: var(--primary-color);
+    }
+
+    .user-menu {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+
+    .user-profile {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 8px 12px;
+        background: #f3f4f6;
+        border-radius: 6px;
+        cursor: pointer;
+    }
+
+    .user-avatar {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        background: var(--primary-color);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: 600;
+    }
+
+    .dashboard-container {
+        display: flex;
+        min-height: calc(100vh - 60px);
+    }
+
+    .sidebar {
+        width: 260px;
+        background: white;
+        border-right: 1px solid #e5e7eb;
+        padding: 20px 0;
+        overflow-y: auto;
+    }
+
+    .sidebar-item {
+        padding: 12px 20px;
+        color: #64748b;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        transition: all 0.2s;
+        cursor: pointer;
+        border-left: 3px solid transparent;
+    }
+
+    .sidebar-item:hover {
+        background: #f8fafc;
+        color: var(--primary-color);
+        border-left-color: var(--primary-color);
+    }
+
+    .sidebar-item.active {
+        background: #f0f9ff;
+        color: var(--primary-color);
+        border-left-color: var(--primary-color);
+        font-weight: 600;
+    }
+
+    .sidebar-item i {
+        font-size: 16px;
+    }
+
+    .sidebar-section-title {
+        padding: 15px 20px 8px;
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+        color: #94a3b8;
+        margin-top: 15px;
+    }
+
+    .main-content {
+        flex: 1;
+        padding: 30px;
+        overflow-y: auto;
+    }
+
+    .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 30px;
+    }
+
+    .page-title {
+        font-size: 28px;
+        font-weight: 700;
+        color: #1e293b;
+    }
+
+    .dashboard-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 20px;
+        margin-bottom: 30px;
+    }
+
+    .stat-card {
+        background: white;
+        padding: 20px;
+        border-radius: 10px;
+        border: 1px solid #e5e7eb;
+    }
+
+    .stat-label {
+        font-size: 13px;
+        color: #64748b;
+        font-weight: 600;
+        margin-bottom: 8px;
+    }
+
+    .stat-value {
+        font-size: 32px;
+        font-weight: 700;
+        color: var(--primary-color);
+    }
+
+    .stat-icon {
+        font-size: 24px;
+        color: var(--primary-color);
+        opacity: 0.2;
+        text-align: right;
+    }
+
+    .section-title {
+        font-size: 20px;
+        font-weight: 700;
+        color: #1e293b;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .section-title i {
+        color: var(--primary-color);
+    }
+
+    .job-listing {
+        display: grid;
+        gap: 15px;
+    }
+
+    .job-card {
+        background: white;
+        padding: 20px;
+        border-radius: 10px;
+        border: 1px solid #e5e7eb;
+        transition: all 0.2s;
+    }
+
+    .job-card:hover {
+        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        transform: translateY(-2px);
+    }
+
+    .job-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 15px;
+    }
+
+    .job-title {
+        font-size: 16px;
+        font-weight: 700;
+        color: #1e293b;
+        margin: 0;
+    }
+
+    .job-meta {
+        display: flex;
+        gap: 15px;
+        flex-wrap: wrap;
+        margin: 12px 0;
+        font-size: 13px;
+    }
+
+    .job-meta-item {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        color: #64748b;
+    }
+
+    .job-meta-item i {
+        color: var(--primary-color);
+    }
+
+    .job-description {
+        color: #64748b;
+        font-size: 14px;
+        margin-bottom: 15px;
+        line-height: 1.5;
+    }
+
+    .job-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-top: 15px;
+        border-top: 1px solid #e5e7eb;
+    }
+
+    .job-salary {
+        font-size: 18px;
+        font-weight: 700;
+        color: var(--primary-color);
+    }
+
+    .btn-apply {
+        background: var(--primary-color);
+        color: white;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 6px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+        text-decoration: none;
+    }
+
+    .btn-apply:hover {
+        background: var(--primary-dark);
+        transform: translateY(-2px);
+    }
+
+    .btn-apply.applied {
+        background: #10b981;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 40px 20px;
+        color: #94a3b8;
+    }
+
+    .empty-state i {
+        font-size: 48px;
+        color: #cbd5e1;
+        margin-bottom: 15px;
+    }
+
+    .badge-new {
+        background: #fcd34d;
+        color: #7c2d12;
+        padding: 4px 10px;
+        border-radius: 4px;
+        font-size: 11px;
+        font-weight: 700;
+    }
+
+    .filter-bar {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+    }
+
+    .filter-input {
+        border: 1px solid #d1d5db;
+        border-radius: 6px;
+        padding: 8px 12px;
+        font-size: 13px;
+        flex: 1;
+        min-width: 200px;
+    }
+
+    .tab-content {
+        display: none;
+    }
+
+    .tab-content.active {
+        display: block;
+    }
+
+    @media (max-width: 768px) {
+        .dashboard-container {
+            flex-direction: column;
+        }
+
+        .sidebar {
+            width: 100%;
+            border-right: none;
+            border-bottom: 1px solid #e5e7eb;
+            display: flex;
+            overflow-x: auto;
+            padding: 0;
+        }
+
+        .sidebar-item {
+            padding: 12px 15px;
+            border-left: none;
+            border-bottom: 3px solid transparent;
+            white-space: nowrap;
+        }
+
+        .sidebar-section-title {
+            display: none;
+        }
+
+        .main-content {
+            padding: 20px;
+        }
+
+        .page-header {
+            flex-direction: column;
+            gap: 15px;
+            align-items: flex-start;
+        }
+
+        .dashboard-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .job-footer {
+            flex-direction: column;
+            gap: 12px;
+            align-items: flex-start;
+        }
+
+        .btn-apply {
+            width: 100%;
+        }
+    }
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<div class="dashboard-header">
+    <div class="container-fluid">
+        <div class="dashboard-header-content">
+            <div class="brand">
+                <i class="fas fa-briefcase"></i>
+                <span data-en="RojiRojgar" data-hi="रोजीरोजगार">RojiRojgar</span>
+            </div>
+            <div class="user-menu">
+                <div class="language-toggle">
+                    <button class="active" onclick="changeLanguage('en')" id="langEn">EN</button>
+                    <button onclick="changeLanguage('hi')" id="langHi">HI</button>
+                </div>
+                <div class="user-profile">
+                    <div class="user-avatar">W</div>
+                    <div>
+                        <div style="font-size: 13px; font-weight: 600; color: #1e293b;" data-en="Worker" data-hi="श्रमिक">Worker</div>
+                        <div style="font-size: 11px; color: #94a3b8;" data-en="Profile" data-hi="प्रोफ़ाइल">Profile</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="dashboard-container">
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="sidebar-section-title" data-en="MAIN" data-hi="मुख्य">MAIN</div>
+        <a class="sidebar-item active" onclick="switchTab('jobs', event)">
+            <i class="fas fa-briefcase"></i>
+            <span data-en="Available Jobs" data-hi="उपलब्ध नौकरियां">Available Jobs</span>
+        </a>
+        <a class="sidebar-item" onclick="switchTab('applied', event)">
+            <i class="fas fa-check-square"></i>
+            <span data-en="Applied Jobs" data-hi="आवेदन की गई नौकरियां">Applied Jobs</span>
+        </a>
+        <a class="sidebar-item" onclick="switchTab('saved', event)">
+            <i class="fas fa-heart"></i>
+            <span data-en="Saved Jobs" data-hi="सहेजी गई नौकरियां">Saved Jobs</span>
+        </a>
+
+        <div class="sidebar-section-title" data-en="ACCOUNT" data-hi="खाता">ACCOUNT</div>
+        <a class="sidebar-item" onclick="switchTab('profile', event)">
+            <i class="fas fa-user"></i>
+            <span data-en="Profile" data-hi="प्रोफ़ाइल">Profile</span>
+        </a>
+        <a class="sidebar-item" onclick="handleLogout()">
+            <i class="fas fa-sign-out-alt"></i>
+            <span data-en="Logout" data-hi="लॉगआउट">Logout</span>
+        </a>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+
+        <!-- Available Jobs Tab -->
+        <div id="tab-jobs" class="tab-content active">
+            <div class="page-header">
+                <h1 class="page-title" data-en="Available Jobs" data-hi="उपलब्ध नौकरियां">Available Jobs</h1>
+            </div>
+
+            <div class="dashboard-grid">
+                <div class="stat-card">
+                    <div style="display: flex; justify-content: space-between;">
+                        <div>
+                            <div class="stat-label" data-en="New Jobs Today" data-hi="आज नई नौकरियां">New Jobs Today</div>
+                            <div class="stat-value">12</div>
+                        </div>
+                        <div class="stat-icon"><i class="fas fa-list"></i></div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div style="display: flex; justify-content: space-between;">
+                        <div>
+                            <div class="stat-label" data-en="Applications Pending" data-hi="लंबित आवेदन">Applications Pending</div>
+                            <div class="stat-value">3</div>
+                        </div>
+                        <div class="stat-icon"><i class="fas fa-hourglass"></i></div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div style="display: flex; justify-content: space-between;">
+                        <div>
+                            <div class="stat-label" data-en="Jobs Completed" data-hi="पूर्ण नौकरियां">Jobs Completed</div>
+                            <div class="stat-value">5</div>
+                        </div>
+                        <div class="stat-icon"><i class="fas fa-check-circle"></i></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="filter-bar">
+                <input type="text" class="filter-input"
+                    placeholder="Search by job title..."
+                    data-placeholder-en="Search by job title..."
+                    data-placeholder-hi="नौकरी के शीर्षक से खोजें...">
+                <select class="filter-input" style="flex: 0 1 auto;">
+                    <option data-en="All Locations" data-hi="सभी स्थान">All Locations</option>
+                    <option data-en="Surat" data-hi="सूरत">Surat</option>
+                    <option data-en="Ahmedabad" data-hi="अहमदाबाद">Ahmedabad</option>
+                </select>
+            </div>
+
+            <div class="section-title">
+                <i class="fas fa-briefcase"></i>
+                <span data-en="Latest Opportunities" data-hi="नवीनतम अवसर">Latest Opportunities</span>
+            </div>
+
+            <div class="job-listing">
+                <div class="job-card">
+                    <div class="job-header">
+                        <div>
+                            <h4 class="job-title" data-en="Mason Required" data-hi="राजमिस्त्री की आवश्यकता">Mason Required</h4>
+                            <span class="badge-new" data-en="NEW" data-hi="नया">NEW</span>
+                        </div>
+                    </div>
+                    <div class="job-description" data-en="Experienced mason needed for residential project in Surat" data-hi="सूरत में आवासीय परियोजना के लिए अनुभवी राजमिस्त्री की आवश्यकता">
+                        Experienced mason needed for residential project in Surat
+                    </div>
+                    <div class="job-meta">
+                        <div class="job-meta-item">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span data-en="Surat" data-hi="सूरत">Surat</span>
+                        </div>
+                        <div class="job-meta-item">
+                            <i class="fas fa-indian-rupee-sign"></i>
+                            <span data-en="₹18,000/month" data-hi="₹18,000/माह">₹18,000/month</span>
+                        </div>
+                        <div class="job-meta-item">
+                            <i class="fas fa-briefcase"></i>
+                            <span data-en="Full-time" data-hi="पूर्णकालिक">Full-time</span>
+                        </div>
+                        <div class="job-meta-item">
+                            <i class="fas fa-clock"></i>
+                            <span data-en="2 hours ago" data-hi="2 घंटे पहले">2 hours ago</span>
+                        </div>
+                    </div>
+                    <div class="job-footer">
+                        <div class="job-salary" data-en="₹18,000" data-hi="₹18,000">₹18,000</div>
+                        <button class="btn-apply" onclick="handleApply(event)" data-en="Apply Now" data-hi="अभी आवेदन करें">Apply Now</button>
+                    </div>
+                </div>
+
+                <div class="job-card">
+                    <div class="job-header">
+                        <div>
+                            <h4 class="job-title" data-en="Carpenter Needed" data-hi="बढ़ई की जरूरत">Carpenter Needed</h4>
+                        </div>
+                    </div>
+                    <div class="job-description" data-en="Skilled carpenter required for interior woodwork and furniture installation" data-hi="इंटीरियर वुडवर्क और फर्नीचर इंस्टॉलेशन के लिए कुशल बढ़ई की आवश्यकता">
+                        Skilled carpenter required for interior woodwork and furniture installation
+                    </div>
+                    <div class="job-meta">
+                        <div class="job-meta-item">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span data-en="Ahmedabad" data-hi="अहमदाबाद">Ahmedabad</span>
+                        </div>
+                        <div class="job-meta-item">
+                            <i class="fas fa-indian-rupee-sign"></i>
+                            <span data-en="₹15,000/month" data-hi="₹15,000/माह">₹15,000/month</span>
+                        </div>
+                        <div class="job-meta-item">
+                            <i class="fas fa-briefcase"></i>
+                            <span data-en="Part-time" data-hi="अंशकालिक">Part-time</span>
+                        </div>
+                        <div class="job-meta-item">
+                            <i class="fas fa-clock"></i>
+                            <span data-en="5 hours ago" data-hi="5 घंटे पहले">5 hours ago</span>
+                        </div>
+                    </div>
+                    <div class="job-footer">
+                        <div class="job-salary" data-en="₹15,000" data-hi="₹15,000">₹15,000</div>
+                        <button class="btn-apply" onclick="handleApply(event)" data-en="Apply Now" data-hi="अभी आवेदन करें">Apply Now</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Applied Jobs Tab -->
+        <div id="tab-applied" class="tab-content">
+            <div class="page-header">
+                <h1 class="page-title" data-en="Applied Jobs" data-hi="आवेदन की गई नौकरियां">Applied Jobs</h1>
+            </div>
+            <div class="job-listing">
+                <div class="job-card">
+                    <div class="job-header">
+                        <div>
+                            <h4 class="job-title" data-en="Mason Required" data-hi="राजमिस्त्री की आवश्यकता">Mason Required</h4>
+                        </div>
+                        <span class="badge-new" style="background: #dbeafe; color: #0c2340;" data-en="PENDING" data-hi="लंबित">PENDING</span>
+                    </div>
+                    <div class="job-meta">
+                        <div class="job-meta-item">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span data-en="Surat" data-hi="सूरत">Surat</span>
+                        </div>
+                        <div class="job-meta-item">
+                            <i class="fas fa-clock"></i>
+                            <span data-en="Applied 2 days ago" data-hi="2 दिन पहले आवेदन किया">Applied 2 days ago</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Saved Jobs Tab -->
+        <div id="tab-saved" class="tab-content">
+            <div class="page-header">
+                <h1 class="page-title" data-en="Saved Jobs" data-hi="सहेजी गई नौकरियां">Saved Jobs</h1>
+            </div>
+            <div class="empty-state">
+                <i class="fas fa-bookmark"></i>
+                <p data-en="No saved jobs yet" data-hi="अभी कोई सहेजी गई नौकरी नहीं">No saved jobs yet</p>
+            </div>
+        </div>
+
+        <!-- Profile Tab -->
+        <div id="tab-profile" class="tab-content">
+            <div class="page-header">
+                <h1 class="page-title" data-en="My Profile" data-hi="मेरी प्रोफ़ाइल">My Profile</h1>
+            </div>
+            <div style="background: white; padding: 25px; border-radius: 10px; border: 1px solid #e5e7eb;">
+                <div style="margin-bottom: 18px;">
+                    <label style="display: block; font-size: 13px; font-weight: 600; color: #334155; margin-bottom: 6px;" data-en="Full Name" data-hi="पूरा नाम">Full Name</label>
+                    <input type="text" class="filter-input" value="Rajesh Kumar" readonly>
+                </div>
+                <div style="margin-bottom: 18px;">
+                    <label style="display: block; font-size: 13px; font-weight: 600; color: #334155; margin-bottom: 6px;" data-en="Skills" data-hi="कौशल">Skills</label>
+                    <input type="text" class="filter-input" value="Masonry, Concrete work, Bricklaying" readonly>
+                </div>
+                <div style="margin-bottom: 18px;">
+                    <label style="display: block; font-size: 13px; font-weight: 600; color: #334155; margin-bottom: 6px;" data-en="Experience" data-hi="अनुभव">Experience</label>
+                    <input type="text" class="filter-input" value="5+ years" readonly>
+                </div>
+                <button class="btn-apply" data-en="Edit Profile" data-hi="प्रोफ़ाइल संपादित करें">Edit Profile</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    const translations = {
+        en: {
+            'RojiRojgar': 'RojiRojgar',
+            'Worker': 'Worker',
+            'Profile': 'Profile',
+            'Available Jobs': 'Available Jobs',
+            'Applied Jobs': 'Applied Jobs',
+            'Saved Jobs': 'Saved Jobs',
+            'Logout': 'Logout',
+            'New Jobs Today': 'New Jobs Today',
+            'Applications Pending': 'Applications Pending',
+            'Jobs Completed': 'Jobs Completed',
+            'Search by job title...': 'Search by job title...',
+            'All Locations': 'All Locations',
+            'Surat': 'Surat',
+            'Ahmedabad': 'Ahmedabad',
+            'Latest Opportunities': 'Latest Opportunities',
+            'Mason Required': 'Mason Required',
+            'NEW': 'NEW',
+            'Experienced mason needed for residential project in Surat': 'Experienced mason needed for residential project in Surat',
+            '₹18,000/month': '₹18,000/month',
+            'Full-time': 'Full-time',
+            '2 hours ago': '2 hours ago',
+            '₹18,000': '₹18,000',
+            'Apply Now': 'Apply Now',
+            'Applied': 'Applied',
+            'Carpenter Needed': 'Carpenter Needed',
+            'Skilled carpenter required for interior woodwork and furniture installation': 'Skilled carpenter required for interior woodwork and furniture installation',
+            '₹15,000/month': '₹15,000/month',
+            'Part-time': 'Part-time',
+            '5 hours ago': '5 hours ago',
+            '₹15,000': '₹15,000',
+            'PENDING': 'PENDING',
+            'Applied 2 days ago': 'Applied 2 days ago',
+            'No saved jobs yet': 'No saved jobs yet',
+            'My Profile': 'My Profile',
+            'Full Name': 'Full Name',
+            'Skills': 'Skills',
+            'Experience': 'Experience',
+            'Edit Profile': 'Edit Profile',
+            'MAIN': 'MAIN',
+            'ACCOUNT': 'ACCOUNT'
+        },
+        hi: {
+            'RojiRojgar': 'रोजीरोजगार',
+            'Worker': 'श्रमिक',
+            'Profile': 'प्रोफ़ाइल',
+            'Available Jobs': 'उपलब्ध नौकरियां',
+            'Applied Jobs': 'आवेदन की गई नौकरियां',
+            'Saved Jobs': 'सहेजी गई नौकरियां',
+            'Logout': 'लॉगआउट',
+            'New Jobs Today': 'आज नई नौकरियां',
+            'Applications Pending': 'लंबित आवेदन',
+            'Jobs Completed': 'पूर्ण नौकरियां',
+            'Search by job title...': 'नौकरी के शीर्षक से खोजें...',
+            'All Locations': 'सभी स्थान',
+            'Surat': 'सूरत',
+            'Ahmedabad': 'अहमदाबाद',
+            'Latest Opportunities': 'नवीनतम अवसर',
+            'Mason Required': 'राजमिस्त्री की आवश्यकता',
+            'NEW': 'नया',
+            'Experienced mason needed for residential project in Surat': 'सूरत में आवासीय परियोजना के लिए अनुभवी राजमिस्त्री की आवश्यकता',
+            '₹18,000/month': '₹18,000/माह',
+            'Full-time': 'पूर्णकालिक',
+            '2 hours ago': '2 घंटे पहले',
+            '₹18,000': '₹18,000',
+            'Apply Now': 'अभी आवेदन करें',
+            'Applied': 'आवेदन किया',
+            'Carpenter Needed': 'बढ़ई की जरूरत',
+            'Skilled carpenter required for interior woodwork and furniture installation': 'इंटीरियर वुडवर्क और फर्नीचर इंस्टॉलेशन के लिए कुशल बढ़ई की आवश्यकता',
+            '₹15,000/month': '₹15,000/माह',
+            'Part-time': 'अंशकालिक',
+            '5 hours ago': '5 घंटे पहले',
+            '₹15,000': '₹15,000',
+            'PENDING': 'लंबित',
+            'Applied 2 days ago': '2 दिन पहले आवेदन किया',
+            'No saved jobs yet': 'अभी कोई सहेजी गई नौकरी नहीं',
+            'My Profile': 'मेरी प्रोफ़ाइल',
+            'Full Name': 'पूरा नाम',
+            'Skills': 'कौशल',
+            'Experience': 'अनुभव',
+            'Edit Profile': 'प्रोफ़ाइल संपादित करें',
+            'MAIN': 'मुख्य',
+            'ACCOUNT': 'खाता'
+        }
+    };
+
+    let currentLanguage = 'en';
+
+    function changeLanguage(lang) {
+        currentLanguage = lang;
+        document.querySelectorAll('[data-en]').forEach(el => {
+            const key = el.getAttribute('data-en');
+            el.textContent = translations[lang][key] || key;
+        });
+        document.querySelectorAll('[data-placeholder-en]').forEach(el => {
+            const key = el.getAttribute('data-placeholder-en');
+            el.placeholder = translations[lang][key] || key;
+        });
+        document.getElementById('langEn').classList.toggle('active', lang === 'en');
+        document.getElementById('langHi').classList.toggle('active', lang === 'hi');
+    }
+
+    function switchTab(tabName, event) {
+        // Hide all tabs
+        document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+        // Remove active from all sidebar items
+        document.querySelectorAll('.sidebar-item').forEach(item => item.classList.remove('active'));
+
+        // Show selected tab
+        const tab = document.getElementById('tab-' + tabName);
+        if (tab) tab.classList.add('active');
+
+        // Mark clicked sidebar item as active
+        if (event) event.currentTarget.classList.add('active');
+    }
+
+    function handleApply(event) {
+        event.preventDefault();
+        const button = event.currentTarget;
+        button.textContent = translations[currentLanguage]['Applied'] || 'Applied';
+        button.classList.add('applied');
+        button.disabled = true;
+    }
+
+    function handleLogout() {
+        if (confirm(currentLanguage === 'en' ? 'Are you sure you want to logout?' : 'क्या आप निश्चित हैं कि आप लॉगआउट करना चाहते हैं?')) {
+            window.location.href = '/';
+        }
+    }
+</script>
+</body>
+</html>

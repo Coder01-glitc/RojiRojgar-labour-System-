@@ -1,0 +1,589 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title id="pageTitle">Login - RojiRojgar</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <style>
+      .auth-page {
+        background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px 0;
+      }
+
+      .auth-header {
+        position: sticky;
+        top: 0;
+        background: white;
+        padding: 15px 0;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        z-index: 100;
+      }
+
+      .language-toggle {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+      }
+
+      .language-toggle button {
+        padding: 6px 12px;
+        border: 1px solid #d1d5db;
+        background: white;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 13px;
+        font-weight: 500;
+        transition: all 0.2s;
+      }
+
+      .language-toggle button.active {
+        background: var(--primary-color);
+        color: white;
+        border-color: var(--primary-color);
+      }
+
+      .language-toggle button:hover {
+        border-color: var(--primary-color);
+      }
+
+      .auth-container {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        width: 100%;
+        max-width: 420px;
+        padding: 40px 30px;
+      }
+
+      .auth-title {
+        font-size: 28px;
+        font-weight: 700;
+        margin-bottom: 10px;
+        color: #1e293b;
+      }
+
+      .auth-subtitle {
+        font-size: 14px;
+        color: #64748b;
+        margin-bottom: 30px;
+      }
+
+      .form-group {
+        margin-bottom: 18px;
+      }
+
+      .form-group label {
+        display: block;
+        font-size: 13px;
+        font-weight: 600;
+        color: #334155;
+        margin-bottom: 6px;
+      }
+
+      .form-control {
+        border: 1px solid #d1d5db;
+        border-radius: 6px;
+        padding: 10px 12px;
+        font-size: 14px;
+        transition: all 0.2s;
+        width: 100%;
+      }
+
+      .form-control:focus {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        outline: none;
+      }
+
+      .form-select {
+        border: 1px solid #d1d5db;
+        border-radius: 6px;
+        padding: 10px 12px;
+        font-size: 14px;
+        width: 100%;
+      }
+
+      .form-select:focus {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+      }
+
+      .btn-login {
+        width: 100%;
+        padding: 11px 0;
+        background: var(--primary-color);
+        color: white;
+        border: none;
+        border-radius: 6px;
+        font-weight: 600;
+        font-size: 14px;
+        cursor: pointer;
+        transition: all 0.2s;
+        margin-top: 10px;
+      }
+
+      .btn-login:hover {
+        background: var(--primary-dark);
+        transform: translateY(-2px);
+      }
+
+      .btn-login:active {
+        transform: translateY(0);
+      }
+
+      .form-message {
+        padding: 10px 12px;
+        border-radius: 6px;
+        font-size: 13px;
+        margin-bottom: 15px;
+      }
+
+      .message-success {
+        background: #d1fae5;
+        color: #065f46;
+      }
+
+      .message-error {
+        background: #fee2e2;
+        color: #991b1b;
+      }
+
+      .message-info {
+        background: #dbeafe;
+        color: #0c2340;
+      }
+
+      .form-footer {
+        margin-top: 20px;
+        padding-top: 20px;
+        border-top: 1px solid #e5e7eb;
+        text-align: center;
+      }
+
+      .form-footer-text {
+        font-size: 13px;
+        color: #64748b;
+      }
+
+      .form-footer a {
+        color: var(--primary-color);
+        text-decoration: none;
+        font-weight: 600;
+        cursor: pointer;
+      }
+
+      .form-footer a:hover {
+        text-decoration: underline;
+      }
+
+      .divider {
+        text-align: center;
+        margin: 20px 0;
+        position: relative;
+      }
+
+      .divider::before,
+      .divider::after {
+        content: "";
+        position: absolute;
+        top: 50%;
+        width: 45%;
+        height: 1px;
+        background: #d1d5db;
+      }
+
+      .divider::before {
+        left: 0;
+      }
+      .divider::after {
+        right: 0;
+      }
+
+      .divider-text {
+        background: white;
+        padding: 0 8px;
+        font-size: 12px;
+        color: #94a3b8;
+      }
+
+      .forgot-password {
+        text-align: right;
+        margin-top: -10px;
+        margin-bottom: 15px;
+      }
+
+      .forgot-password a {
+        font-size: 12px;
+        color: var(--primary-color);
+        text-decoration: none;
+        font-weight: 500;
+      }
+
+      .forgot-password a:hover {
+        text-decoration: underline;
+      }
+
+      .remember-me {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 15px;
+      }
+
+      .remember-me input[type="checkbox"] {
+        cursor: pointer;
+        accent-color: var(--primary-color);
+      }
+
+      .remember-me label {
+        margin: 0;
+        font-size: 13px;
+        color: #64748b;
+        cursor: pointer;
+        font-weight: 400;
+      }
+
+      .role-info {
+        background: #f0f9ff;
+        border-left: 3px solid var(--primary-color);
+        padding: 10px 12px;
+        border-radius: 4px;
+        font-size: 12px;
+        color: #0c4a6e;
+        margin-bottom: 15px;
+      }
+
+      .role-info i {
+        margin-right: 6px;
+      }
+
+      @media (max-width: 576px) {
+        .auth-container {
+          padding: 25px 20px;
+        }
+
+        .auth-title {
+          font-size: 22px;
+        }
+
+        .language-toggle {
+          gap: 5px;
+        }
+
+        .language-toggle button {
+          padding: 5px 10px;
+          font-size: 12px;
+        }
+      }
+      .btn-login {
+        width: 100%;
+        background: #2563eb;
+        color: white;
+        border: none;
+        padding: 14px;
+        border-radius: 10px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        margin-top: 20px;
+      }
+
+      .btn-login:hover {
+        background: #1d4ed8;
+      }
+      .auth-divider {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 30px 0;
+    color: #888;
+    font-size: 14px;
+    position: relative;
+}
+.auth-divider::before,
+.auth-divider::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: #ddd;
+    margin: 0 10px;
+}
+    </style>
+  </head>
+  <body>
+    <!-- Language Toggle Header -->
+    <div class="auth-header">
+      <div class="container d-flex justify-content-between align-items-center">
+        <div>
+          <h4 class="mb-0" style="font-weight: 700; color: #1e293b">
+            <i class="fas fa-briefcase" style="color: var(--primary-color)"></i>
+            RojiRojgar
+          </h4>
+        </div>
+        <div class="language-toggle">
+          <button class="active" onclick="changeLanguage('en')" id="langEn">
+            English
+          </button>
+          <button onclick="changeLanguage('hi')" id="langHi">Hindi</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Auth Page -->
+    <div class="auth-page">
+      <div class="auth-container">
+        <div class="auth-title" data-en="Login" data-hi="लॉगिन">Login</div>
+        <div
+          class="auth-subtitle"
+          data-en="Welcome back! Sign in to your account"
+          data-hi="आपका स्वागत है! अपने खाते में साइन इन करें"
+        >
+          Welcome back! Sign in to your account
+        </div>
+        <div class="role-info">
+          <i class="fas fa-info-circle"></i>
+          <span
+            data-en="Select your role below to login"
+            data-hi="नीचे अपनी भूमिका चुनें"
+          >
+            Select your role below to login
+          </span>
+        </div>
+
+        <div id="loginForm">
+          <!-- Role Selector -->
+          <div class="form-group">
+            <label data-en="Select Your Role" data-hi="अपनी भूमिका चुनें">
+              Select Your Role
+            </label>
+            <select class="form-select" name="role" required>
+              <option
+                value=""
+                data-en="Choose a role"
+                data-hi="एक भूमिका चुनें"
+              >
+                Choose a role
+              </option>
+              <option value="WORKER" data-en="Worker" data-hi="श्रमिक">
+                Worker
+              </option>
+              <option value="CONTRACTOR" data-en="Contractor" data-hi="ठेकेदार">
+                Contractor
+              </option>
+              <option value="COMPANY" data-en="Company" data-hi="कंपनी">
+                Company
+              </option>
+            </select>
+          </div>
+
+          <!-- ✅ name="username" — required by Spring Security -->
+          <div class="form-group">
+            <label data-en="Email or Phone" data-hi="ईमेल या फोन">
+              Email or Phone
+            </label>
+            <input
+              type="text"
+              id="email"
+              class="form-control"
+              name="username"
+              placeholder="Enter email or phone"
+              data-placeholder-en="Enter email or phone"
+              data-placeholder-hi="ईमेल या फोन नंबर दर्ज करें"
+              required
+            />
+          </div>
+
+          <div class="form-group">
+            <label data-en="Password" data-hi="पासवर्ड">Password</label>
+            <input
+              type="password"
+              id="password"
+              class="form-control"
+              name="password"
+              placeholder="Enter your password"
+              data-placeholder-en="Enter your password"
+              data-placeholder-hi="अपना पासवर्ड दर्ज करें"
+              required
+            />
+          </div>
+
+          <!-- Remember Me -->
+          <div class="remember-me">
+            <input type="checkbox" id="rememberMe" name="remember-me" />
+            <label
+              for="rememberMe"
+              data-en="Remember me"
+              data-hi="मुझे याद रखें"
+              >Remember me</label
+            >
+          </div>
+
+          <!-- Forgot Password -->
+          <div class="forgot-password">
+            <a href="#" data-en="Forgot Password?" data-hi="पासवर्ड भूल गए?"
+              >Forgot Password?</a
+            >
+          </div>
+
+          <button
+            type="button"
+            class="btn-login"
+            onclick="loginUser()"
+            data-en="Login"
+            data-hi="लॉगिन"
+          >
+            Login
+          </button>
+        </div>
+
+        <div class="auth-divider">
+          <span
+            data-en="Don't have an account?"
+            data-hi="खाता नहीं है?"
+            >Don't have an account?</span
+          >
+        </div>
+
+        <!-- Register link -->
+        <a
+          href="register.html"
+          class="btn btn-outline-secondary w-100"
+          style="border-radius: 6px; font-weight: 600"
+        >
+          <i class="fas fa-user-plus"></i>
+          <span data-en="Create New Account" data-hi="नया खाता बनाएं"
+            >Create New Account</span
+          >
+        </a>
+
+        <div class="form-footer">
+          <div class="form-footer-text">
+            <span data-en="Need help?" data-hi="मदद चाहिए?">Need help?</span>
+            <a
+              href="mailto:support@rojiroj gar.com"
+              data-en="Contact Support"
+              data-hi="समर्थन संपर्क करें"
+              >Contact Support</a
+            >
+          </div>
+        </div>
+      </div>
+    </div>
+    <script>
+      const translations = {
+        en: {
+          Login: "Login",
+          "Welcome back! Sign in to your account":
+            "Welcome back! Sign in to your account",
+          "Select your role below to login": "Select your role below to login",
+          "Select Your Role": "Select Your Role",
+          "Choose a role": "Choose a role",
+          Worker: "Worker",
+          Contractor: "Contractor",
+          Company: "Company",
+          "Email or Phone": "Email or Phone",
+          Password: "Password",
+          "Remember me": "Remember me",
+          "Forgot Password?": "Forgot Password?",
+          "Don't have an account?": "Don't have an account?",
+          "Create New Account": "Create New Account",
+          "Need help?": "Need help?",
+          "Contact Support": "Contact Support",
+        },
+        hi: {
+          Login: "लॉगिन",
+          "Welcome back! Sign in to your account":
+            "आपका स्वागत है! अपने खाते में साइन इन करें",
+          "Select your role below to login": "नीचे अपनी भूमिका चुनें",
+          "Select Your Role": "अपनी भूमिका चुनें",
+          "Choose a role": "एक भूमिका चुनें",
+          Worker: "श्रमिक",
+          Contractor: "ठेकेदार",
+          Company: "कंपनी",
+          "Email or Phone": "ईमेल या फोन",
+          Password: "पासवर्ड",
+          "Remember me": "मुझे याद रखें",
+          "Forgot Password?": "पासवर्ड भूल गए?",
+          "Don't have an account?": "खाता नहीं है?",
+          "Create New Account": "नया खाता बनाएं",
+          "Need help?": "मदद चाहिए?",
+          "Contact Support": "समर्थन संपर्क करें",
+        },
+      };
+
+      let currentLanguage = "en";
+
+      function changeLanguage(lang) {
+        currentLanguage = lang;
+
+        document.querySelectorAll("[data-en]").forEach((el) => {
+          const key = el.getAttribute("data-en");
+          if (translations[lang][key]) {
+            el.textContent = translations[lang][key];
+          }
+        });
+
+        document.querySelectorAll("[data-placeholder-en]").forEach((el) => {
+          el.placeholder =
+            el.getAttribute("data-placeholder-" + lang) ||
+            el.getAttribute("data-placeholder-en");
+        });
+
+        document
+          .getElementById("langEn")
+          .classList.toggle("active", lang === "en");
+        document
+          .getElementById("langHi")
+          .classList.toggle("active", lang === "hi");
+        document.getElementById("pageTitle").textContent =
+          (lang === "hi" ? "लॉगिन" : "Login") + " - RojiRojgar";
+      }
+      async function loginUser() {
+        const email = document.getElementById("email").value;
+
+        const password = document.getElementById("password").value;
+
+        const response = await fetch("http://localhost:8080/api/login", {
+          method: "POST",
+
+          headers: {
+            "Content-Type": "application/json",
+          },
+
+          body: JSON.stringify({
+            email: email,
+            password: password,
+          }),
+        });
+
+        const data = await response.json();
+
+        localStorage.setItem("token", data.token);
+
+        localStorage.setItem("role", data.role);
+
+        if (data.role === "WORKER") {
+          window.location.href = "worker-dashboard.html";
+        } else if (data.role === "CONTRACTOR") {
+          window.location.href = "contractor-dashboard.html";
+        } else {
+          window.location.href = "company-dashboard.html";
+        }
+      }
+    </script>
+
+    <script src="js/login.js"></script>
+  </body>
+</html>

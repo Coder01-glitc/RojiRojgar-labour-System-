@@ -32,7 +32,7 @@ Millions of daily wage workers — carpenters, plumbers, electricians, painters,
 
 ## 👨‍💻 Author
 
-**Coder01-glitc** — [GitHub](https://github.com/Coder01-glitc)
+**Coder01-glitc(Krish Bharsadiya)** — [GitHub](https://github.com/Coder01-glitc)
 
 ---
 
